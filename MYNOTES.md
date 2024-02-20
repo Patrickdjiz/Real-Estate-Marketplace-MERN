@@ -5,6 +5,7 @@ npm install express
 npm install nodemon
 npm install mongoose
 npm install dotenv
+npm install bcryptjs
 
 backend:
 
