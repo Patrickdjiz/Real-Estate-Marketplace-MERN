@@ -10,6 +10,6 @@ export const signup = async (req, res, next) => {
         await newUser.save();
         res.status(201).json(newUser)
     } catch (error) {
-        next(errorHandler(404, 'error in signing up')) // this will send the error to the middleware
+        next(error) // this will send the error to the middleware
     }
 }
