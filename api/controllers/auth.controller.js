@@ -27,7 +27,7 @@ export const signin = async (req, res, next) => {
             return next(errorHandler(404, 'Invalid password'))
         }
         // token will be used to authenticate the user in the future
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET) // we create a token with the user id and the secret key
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET) // we create a token with the user id and the secret key from our .env file
         const { password: hashedPassword, ...userInfo} = validUser._doc; // we remove the password from the validUser so we can only send the userInfo
         res.cookie('access_token', token, { httpOnly: true }).status(200).json(userInfo) // we send the token as a cookie to the user in their browser and the userInfo in the response 
     } catch (error) {
