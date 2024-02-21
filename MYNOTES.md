@@ -6,6 +6,7 @@ npm install nodemon
 npm install mongoose
 npm install dotenv
 npm install bcryptjs
+npm install jsonwebtoken
 
 backend:
 
