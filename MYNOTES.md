@@ -19,4 +19,5 @@ npm install react-router-dom
 npm install react-icons
 npm install @reduxjs/toolkit react-redux
 npm install redux-persist
+npm install firebase
 
