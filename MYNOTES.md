@@ -17,10 +17,5 @@ npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 npm install react-router-dom
 npm install react-icons
+npm install @reduxjs/toolkit react-redux
 
-
-Commands:
-backend:
-
-
-frontend:

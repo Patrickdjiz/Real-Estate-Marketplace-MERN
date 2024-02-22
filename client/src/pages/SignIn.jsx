@@ -1,12 +1,15 @@
 import { set } from 'mongoose'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
+import { sign } from 'jsonwebtoken'
 
 function SignIn() {
   const [formData, setFormData] = useState({email: '', password: ''})
-  const [error, setError] = useState(null) // we add a state to handle the error message
-  const [loading, setLoading] = useState(false) // we add a state to handle the loading state
+  const { loading, error } = useSelector((state) => state.user) // we use the useSelector hook to get the loading and error state from the 'user' slice
   const navigate = useNavigate() // we use the navigate hook to redirect the user after the sign up
+  const dispatch = useDispatch() // we use the useDispatch hook to dispatch the actions
 
   const handleChange = (e) => {
     setFormData({
@@ -17,7 +20,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => { 
     e.preventDefault() // we prevent the default behavior of the form to avoid the page to refresh
-    setLoading(true) // we set the loading state to true
+    dispatch(signInStart()) // we dispatch the signInStart action to set the loading state to true
     const res = await fetch('/api/auth/signin', // we create the proxy to /api in vite.config.js so we don't need to specify the full url
       {
         method: 'POST',
@@ -28,12 +31,10 @@ function SignIn() {
       })
       const data = await res.json() // we parse the response to JSON 
       if (data.success === false) { // in our backend we send a success property in the response, if it's false we set the error message
-        setError(data.message) // we set the error message to the message property of the response
-        setLoading(false)
+        dispatch(signInFailure(data.message)) // we dispatch the signInFailure action to set the error message
         return
       }
-      setLoading(false)
-      setError(null)
+      signInSuccess(data) // we dispatch the signInSuccess action to set the currentUser and loading state to false
       navigate('/') // we redirect the user to the sign in page
   }
 
