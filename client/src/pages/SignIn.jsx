@@ -1,9 +1,7 @@
-import { set } from 'mongoose'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
-import { sign } from 'jsonwebtoken'
 
 function SignIn() {
   const [formData, setFormData] = useState({email: '', password: ''})
@@ -34,7 +32,7 @@ function SignIn() {
         dispatch(signInFailure(data.message)) // we dispatch the signInFailure action to set the error message
         return
       }
-      signInSuccess(data) // we dispatch the signInSuccess action to set the currentUser and loading state to false
+      dispatch(signInSuccess(data)) // we dispatch the signInSuccess action to set the currentUser and loading state to false
       navigate('/') // we redirect the user to the sign in page
   }
 
