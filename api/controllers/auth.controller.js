@@ -40,7 +40,7 @@ export const google = async (req, res, next) => { // this function is for when u
         const user = await User.findOne({ email: req.body.email }) // we check if the user is already in the database
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
-            const { password: hashedPassword, ...userInfo} = user._doc;
+            const { password: pass, ...userInfo} = user._doc;
             res.cookie('access_token', token, { httpOnly: true }).status(200).json(userInfo)
         } else {
             const generatedPassword = Math.random().toString(36).slice(-8) // generate a random password for the user since they are signing in with google and we don't have their password
