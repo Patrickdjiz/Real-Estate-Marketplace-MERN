@@ -3,8 +3,8 @@ import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-function Header() {
-  const { currentUser } = useSelector(state => state.user) // we use the useSelector hook to get the currentUser state from the 'user' slice
+export default function Header() {
+  const {currentUser} = useSelector((state) => state.user) // we use the useSelector hook to get the currentUser state from the 'user' slice
   return (
     <header className='bg-slate-200 shadow-md flex justify-between items-center'>
         <Link to='/'>
@@ -38,5 +38,3 @@ function Header() {
     </header>
   )
 }
-
-export default Header

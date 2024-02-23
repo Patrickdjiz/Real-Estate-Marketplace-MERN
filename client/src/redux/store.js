@@ -27,7 +27,7 @@ export const store = configureStore({ // we create the store using the configure
     // They take the current state and an action as input, and return a new state.
     // Reducers are combined using the combineReducers function to create the root reducer.
 
-    reducer: {user: persistedReducer}, // we pass the persistedReducer to the store which contains the userReducer and persistConfig
+    reducer: persistedReducer, // we pass the persistedReducer to the store which contains the userReducer and persistConfig
     
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ // we add the middleware to the store
         serializableCheck: false // we disable the serializableCheck middleware to avoid an error when we send the state to the backend
