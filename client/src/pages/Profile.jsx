@@ -10,9 +10,6 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0)
   const [fileUploadError, setFileUploadError] = useState(false)
   const [formData, setFormData] = useState({})
-  console.log(formData)
-  console.log(filePerc)
-  console.log(fileUploadError)
   
 
   // firebase storage
@@ -53,7 +50,18 @@ export default function Profile() {
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
       <form className='flex flex-col gap-4'>
         <input onChange={(e) => setFile(e.target.files[0])} type='file' ref={fileRef} hidden accept='image/*'/>
-        <img onClick={() => fileRef.current.click()} src={currentUser.profilePicture} alt="profile" className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2' />
+        <img onClick={() => fileRef.current.click()} src={formData.profilePicture || currentUser.profilePicture} 
+        alt="profile" className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2' />
+        <p className='text-sm self-center'>
+          {fileUploadError ? (
+            <span className='text-red-700'>Error Image Upload</span> ) :
+            filePerc > 0 && filePerc < 100 ? (
+           <span className='text-slate-700'>{`Uploading ${filePerc}%`}</span> ) :
+              filePerc === 100 ? (
+                <span className='text-green-700'>Image successfully uploaded!</span> ) : (
+                ""
+              )}
+        </p>
         <input type="text" placeholder='username' className='border p-3 rounded-lg' id='username'/>
         <input type="text" placeholder='email' className='border p-3 rounded-lg' id='email'/>
         <input type="text" placeholder='password' className='border p-3 rounded-lg' id='password'/>
