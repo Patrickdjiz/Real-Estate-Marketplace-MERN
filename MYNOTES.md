@@ -7,6 +7,7 @@ npm install mongoose
 npm install dotenv
 npm install bcryptjs
 npm install jsonwebtoken
+npm install cookie-parser
 
 backend:
 
