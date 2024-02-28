@@ -28,3 +28,16 @@ export const updateUser = async (req, res, next) => {
         next(error)
     }
 }
+
+export const deleteUser = async (req, res, next) => {
+    if(req.user.id !== req.params.id) { // we check if the user id from the token we verified is the same as the user id from the request
+        return next(errorHandler(403, 'You can only delete your account'))
+    }
+    try {
+        await User.findByIdAndDelete(req.params.id) // we delete the user with the id from the request
+        res.clearCookie('access_token') // we clear the access_token cookie
+        res.status(200).json('Account has been deleted') // we send a success message in the response
+    } catch (error) {
+        next(error)
+    }
+}
