@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'; // Combined import
 import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { updateUserFailure, updateUserStart, updateUserSuccess } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Profile() {
   const {currentUser} = useSelector((state) => state.user)
@@ -10,6 +12,7 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0)
   const [fileUploadError, setFileUploadError] = useState(false)
   const [formData, setFormData] = useState({})
+  const dispatch = useDispatch()
   
 
   // firebase storage
@@ -45,10 +48,38 @@ export default function Profile() {
     )
   }
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value }) // we spread the formData object to keep the previous values and set the value to the corresponding key in the formData object
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      dispatch(updateUserStart())
+      const res = await fetch(`/api/auth/update/${currentUser._id}`, { // we create the proxy to /api in vite.config.js so we don't need to specify the full url
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData) // we send the formData object as a JSON string
+      })
+      const data = await res.json() // we parse the response to JSON
+
+      if (data.success === false) { // in our backend we send a success property in the response, if it's false we set the error message
+        dispatch(updateUserFailure(data.message))
+        return
+      }
+
+      dispatch(updateUserSuccess(data))
+    } catch(error){
+      dispatch(updateUserFailure(error.message))
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input onChange={(e) => setFile(e.target.files[0])} type='file' ref={fileRef} hidden accept='image/*'/>
         <img onClick={() => fileRef.current.click()} src={formData.profilePicture || currentUser.profilePicture} 
         alt="profile" className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2' />
@@ -62,9 +93,9 @@ export default function Profile() {
                 ""
               )}
         </p>
-        <input type="text" placeholder='username' className='border p-3 rounded-lg' id='username'/>
-        <input type="text" placeholder='email' className='border p-3 rounded-lg' id='email'/>
-        <input type="text" placeholder='password' className='border p-3 rounded-lg' id='password'/>
+        <input type="text" placeholder='username' className='border p-3 rounded-lg' id='username' defaultValue={currentUser.username} onChange={handleChange}/>
+        <input type="text" placeholder='email' className='border p-3 rounded-lg' id='email' defaultValue={currentUser.email} onChange={handleChange}/>
+        <input type="text" placeholder='password' className='border p-3 rounded-lg' id='password' onChange={handleChange}/>
         <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>Update</button>
       </form>
       <div className="flex justify-between mt-5">
