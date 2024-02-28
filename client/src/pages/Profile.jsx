@@ -6,12 +6,13 @@ import { updateUserFailure, updateUserStart, updateUserSuccess } from '../redux/
 import { useDispatch } from 'react-redux';
 
 export default function Profile() {
-  const {currentUser} = useSelector((state) => state.user)
+  const {currentUser, loading, error} = useSelector((state) => state.user)
   const fileRef = useRef(null)
   const [file, setFile] = useState(undefined)
   const [filePerc, setFilePerc] = useState(0)
   const [fileUploadError, setFileUploadError] = useState(false)
   const [formData, setFormData] = useState({})
+  const [updateSuccess, setUpdateSuccess] = useState(false)
   const dispatch = useDispatch()
   
 
@@ -56,12 +57,12 @@ export default function Profile() {
     e.preventDefault()
     try {
       dispatch(updateUserStart())
-      const res = await fetch(`/api/auth/update/${currentUser._id}`, { // we create the proxy to /api in vite.config.js so we don't need to specify the full url
-        method: 'PUT',
+      const res = await fetch(`/api/user/update/${currentUser._id}`, { // we create the proxy to /api in vite.config.js so we don't need to specify the full url
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData) // we send the formData object as a JSON string
+        body: JSON.stringify(formData), // we send the formData object as a JSON string
       })
       const data = await res.json() // we parse the response to JSON
 
@@ -71,6 +72,8 @@ export default function Profile() {
       }
 
       dispatch(updateUserSuccess(data))
+      setUpdateSuccess(true)
+
     } catch(error){
       dispatch(updateUserFailure(error.message))
     }
@@ -96,12 +99,20 @@ export default function Profile() {
         <input type="text" placeholder='username' className='border p-3 rounded-lg' id='username' defaultValue={currentUser.username} onChange={handleChange}/>
         <input type="text" placeholder='email' className='border p-3 rounded-lg' id='email' defaultValue={currentUser.email} onChange={handleChange}/>
         <input type="text" placeholder='password' className='border p-3 rounded-lg' id='password' onChange={handleChange}/>
-        <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>Update</button>
+        <button disabled={loading} className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>
+          {loading ? 'Loading...' : 'Update'}
+        </button>
       </form>
       <div className="flex justify-between mt-5">
         <span className='text-red-700 cursor-pointer'>Delete Account</span>
         <span className='text-red-700 cursor-pointer'>Sign Out</span>
       </div>
+      <p className='text-red-700 mt-5'>
+        {error ? error : ''}  
+      </p>            
+      <p className='text-green-700 mt-5'>
+        {updateSuccess ? 'Profile updated successfully!' : ''}
+      </p>
     </div>
   )
 }
