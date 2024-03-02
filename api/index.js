@@ -15,7 +15,7 @@ app.use(cookieParser()) // we use the cookieParser middleware to parse the cooki
 // Routes
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
-app.use('api/listings', listingRouter)
+app.use('/api/listing', listingRouter)
 
 //--------Middleware---------//
 // our controllers send the error to next() and this middleware will catch it
