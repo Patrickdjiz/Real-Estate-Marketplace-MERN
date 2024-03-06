@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs'
 import User from '../models/user.model.js'
 import { errorHandler } from '../utils/error.js'
+import Listing from '../models/listing.model.js'
 
 export const updateUser = async (req, res, next) => {
     if(req.user.id !== req.params.id) { // we check if the user id from the token we verified is the same as the user id from the request
@@ -39,5 +40,19 @@ export const deleteUser = async (req, res, next) => {
         res.status(200).json('Account has been deleted') // we send a success message in the response
     } catch (error) {
         next(error)
+    }
+}
+
+export const getUserListings = async (req, res, next) => {
+    
+    if(req.user.id === req.params.id) { // we check if the user id from the token we verified is the same as the user id from the request
+        try {
+            const listings = await Listing.find({ userRef: req.params.id }) // we find the listings with the user id from the request
+            res.status(200).json(listings) // we send the listings in the response
+        } catch (error) {
+            next(error)
+        }
+    } else {
+        return next(errorHandler(401, 'you can only view your own listings'))
     }
 }
