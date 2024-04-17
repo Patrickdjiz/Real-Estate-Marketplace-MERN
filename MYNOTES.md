@@ -9,10 +9,7 @@ npm install bcryptjs
 npm install jsonwebtoken
 npm install cookie-parser
 
-backend:
-
-
-frontend:
+client:
 npm install
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
@@ -21,4 +18,5 @@ npm install react-icons
 npm install @reduxjs/toolkit react-redux
 npm install redux-persist
 npm install firebase
+npm install swipper
 
